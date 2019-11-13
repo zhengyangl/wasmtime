@@ -331,6 +331,7 @@ fn relocate(
                         FloorF64 => wasmtime_f64_floor as usize,
                         TruncF64 => wasmtime_f64_trunc as usize,
                         NearestF64 => wasmtime_f64_nearest as usize,
+                        PrintText => wasmtime_print_text as usize,
                         #[cfg(not(target_os = "windows"))]
                         Probestack => __rust_probestack as usize,
                         #[cfg(all(target_os = "windows", target_env = "gnu"))]

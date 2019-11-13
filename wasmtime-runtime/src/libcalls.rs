@@ -137,3 +137,12 @@ pub unsafe extern "C" fn wasmtime_imported_memory32_size(
 
     instance.imported_memory_size(memory_index)
 }
+
+static mut C: u32 = 0;
+/// counter function
+pub extern "C" fn wasmtime_print_text() {
+    unsafe {
+        C += 1;
+        print!("counter: {}\n", C);
+    }
+}
