@@ -151,7 +151,7 @@ pub extern "C" fn wasmtime_instruction_hook(namespace: u32, index: u32) {
 /// function hook
 pub extern "C" fn wasmtime_func_hook_enter(namespace: u32, index: u32) {
     match SystemTime::now().duration_since(SystemTime::UNIX_EPOCH) {
-        Ok(n) => println!("{},enter,u{}:{}", n.as_millis(), namespace, index),
+        Ok(n) => println!("s,{},u{}:{}", n.as_millis(), namespace, index),
         Err(_) => panic!("Error getting time"),
     }
 }
@@ -159,7 +159,7 @@ pub extern "C" fn wasmtime_func_hook_enter(namespace: u32, index: u32) {
 /// function hook
 pub extern "C" fn wasmtime_func_hook_exit(namespace: u32, index: u32) {
     match SystemTime::now().duration_since(SystemTime::UNIX_EPOCH) {
-        Ok(n) => println!("{},exit,u{}:{}", n.as_millis(), namespace, index),
+        Ok(n) => println!("t,{},u{}:{}", n.as_millis(), namespace, index),
         Err(_) => panic!("Error getting time"),
     }
 
