@@ -4,7 +4,7 @@
 
 use crate::vmcontext::VMContext;
 use cranelift_wasm::{DefinedMemoryIndex, MemoryIndex};
-use std::time::{Duration, SystemTime};
+use std::time::{SystemTime};
 
 /// Implementation of f32.ceil
 pub extern "C" fn wasmtime_f32_ceil(x: f32) -> f32 {
@@ -144,14 +144,14 @@ static mut C: u32 = 0;
 pub extern "C" fn wasmtime_instruction_hook(namespace: u32, index: u32) {
     unsafe {
         C += 1;
-        print!("i f u{}:{} {}\n", namespace, index, C);
+        print!("i,f,u{}:{},{}\n", namespace, index, C);
     }
 }
 
 /// function hook
 pub extern "C" fn wasmtime_func_hook_enter(namespace: u32, index: u32) {
     match SystemTime::now().duration_since(SystemTime::UNIX_EPOCH) {
-        Ok(n) => println!("s u{}:{} {}", namespace, index, n.as_millis()),
+        Ok(n) => println!("s,u{}:{},{}", namespace, index, n.as_millis()),
         Err(_) => panic!("Error getting time"),
     }
 }
@@ -159,7 +159,7 @@ pub extern "C" fn wasmtime_func_hook_enter(namespace: u32, index: u32) {
 /// function hook
 pub extern "C" fn wasmtime_func_hook_exit(namespace: u32, index: u32) {
     match SystemTime::now().duration_since(SystemTime::UNIX_EPOCH) {
-        Ok(n) => println!("t u{}:{} {}", namespace, index, n.as_millis()),
+        Ok(n) => println!("t,u{}:{},{}", namespace, index, n.as_millis()),
         Err(_) => panic!("Error getting time"),
     }
 
