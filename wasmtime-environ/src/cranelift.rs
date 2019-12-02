@@ -271,6 +271,12 @@ impl crate::compilation::Compiler for Cranelift {
 
                             let stack_slots = context.func.stack_slots.clone();
 
+                            if let ExternalName::User { namespace, index } = get_func_name(func_index) {
+                                print!("{}\n", module.function_names[&func_index]);
+                                print!("u{},{}\n", namespace, index);
+                            }
+
+
                             Ok((
                                 code_buf,
                                 jt_offsets,

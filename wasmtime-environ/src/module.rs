@@ -13,6 +13,7 @@ use cranelift_wasm::{
     GlobalIndex, Memory, MemoryIndex, SignatureIndex, Table, TableIndex,
 };
 use indexmap::IndexMap;
+use std::collections::HashMap;
 
 /// A WebAssembly table initializer.
 #[derive(Clone, Debug, Hash)]
@@ -170,6 +171,10 @@ pub struct Module {
 
     /// WebAssembly table initializers.
     pub table_elements: Vec<TableElements>,
+
+    /// foo
+    pub function_names: HashMap<FuncIndex, String>,
+
 }
 
 impl Module {
@@ -188,6 +193,7 @@ impl Module {
             exports: IndexMap::new(),
             start_func: None,
             table_elements: Vec::new(),
+            function_names: HashMap::new(),
         }
     }
 
