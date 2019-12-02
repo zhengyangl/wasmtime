@@ -300,7 +300,7 @@ impl crate::compilation::Compiler for Cranelift {
                         )| {
                             if let ExternalName::User { namespace, index } = get_func_name(func_index) {
                                 let func_name = &module.function_names[&func_index];
-                                match write!(&output, "{},u{}:{}\n", func_name, namespace, index) {
+                                match write!(&output, "u{}:{},{}\n", namespace, index, func_name) {
                                     Ok(_) => eprintln!("[INFO] dumping function {} into the symbol table", func_name),
                                     Err(err) => panic!("[ERR] {}", err)
                                 }
