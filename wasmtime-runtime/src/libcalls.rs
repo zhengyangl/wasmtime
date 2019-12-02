@@ -144,25 +144,23 @@ static mut C: u32 = 0;
 pub extern "C" fn wasmtime_instruction_hook(namespace: u32, index: u32) {
     unsafe {
         C += 1;
-        print!("in function u{}:{}\n", namespace, index);
-        print!("  global counter is now {}\n", C);
+        print!("i f u{}:{} {}\n", namespace, index, C);
     }
 }
 
 /// function hook
 pub extern "C" fn wasmtime_func_hook_enter(namespace: u32, index: u32) {
     match SystemTime::now().duration_since(SystemTime::UNIX_EPOCH) {
-        Ok(n) => println!("1970-01-01 00:00:00 UTC was {} milliseconds ago!", n.as_millis()),
-        Err(_) => panic!("SystemTime before UNIX EPOCH!"),
+        Ok(n) => println!("s u{}:{} {}", namespace, index, n.as_millis()),
+        Err(_) => panic!("Error getting time"),
     }
-    print!("enter function u{}:{}\n", namespace, index);
 }
 
 /// function hook
 pub extern "C" fn wasmtime_func_hook_exit(namespace: u32, index: u32) {
     match SystemTime::now().duration_since(SystemTime::UNIX_EPOCH) {
-        Ok(n) => println!("1970-01-01 00:00:00 UTC was {} milliseconds ago!", n.as_millis()),
-        Err(_) => panic!("SystemTime before UNIX EPOCH!"),
+        Ok(n) => println!("t u{}:{} {}", namespace, index, n.as_millis()),
+        Err(_) => panic!("Error getting time"),
     }
-    print!("exit function u{}:{}\n", namespace, index);
+
 }
