@@ -23,6 +23,8 @@ use cranelift_codegen::Context;
 use cranelift_entity::PrimaryMap;
 use cranelift_wasm::{DefinedFuncIndex, FuncIndex, FuncTranslator, ModuleTranslationState};
 use rayon::prelude::{IntoParallelRefIterator, ParallelIterator};
+use std::fs::File;
+use std::io::Write;
 
 /// Implementation of a relocation sink that just saves all the information for later
 pub struct RelocSink {
@@ -199,7 +201,7 @@ impl crate::compilation::Compiler for Cranelift {
             "cranelift",
             generate_debug_info,
         );
-
+        let output = File::create("func_symbol_table.txt").expect("Unable to open symbol table");
         let data = match cache_entry.get_data() {
             Some(data) => data,
             None => {
@@ -271,13 +273,8 @@ impl crate::compilation::Compiler for Cranelift {
 
                             let stack_slots = context.func.stack_slots.clone();
 
-                            if let ExternalName::User { namespace, index } = get_func_name(func_index) {
-                                print!("{}\n", module.function_names[&func_index]);
-                                print!("u{},{}\n", namespace, index);
-                            }
-
-
                             Ok((
+                                func_index,
                                 code_buf,
                                 jt_offsets,
                                 reloc_sink.func_relocs,
@@ -292,6 +289,7 @@ impl crate::compilation::Compiler for Cranelift {
                     .into_iter()
                     .for_each(
                         |(
+                            func_index,
                             function,
                             func_jt_offsets,
                             relocs,
@@ -300,6 +298,13 @@ impl crate::compilation::Compiler for Cranelift {
                             sss,
                             function_traps,
                         )| {
+                            if let ExternalName::User { namespace, index } = get_func_name(func_index) {
+                                match write!(&output, "{},u{}:{}\n", module.function_names[&func_index], namespace, index) {
+                                    Ok(_) => println!("[INFO] function symbol table dumped"),
+                                    Err(err) => panic!("[ERR] {}", err)
+                                }
+                            }
+
                             functions.push(CodeAndJTOffsets {
                                 body: function,
                                 jt_offsets: func_jt_offsets,
