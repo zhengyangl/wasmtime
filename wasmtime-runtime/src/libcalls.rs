@@ -4,6 +4,7 @@
 
 use crate::vmcontext::VMContext;
 use cranelift_wasm::{DefinedMemoryIndex, MemoryIndex};
+use std::time::{Duration, SystemTime};
 
 /// Implementation of f32.ceil
 pub extern "C" fn wasmtime_f32_ceil(x: f32) -> f32 {
@@ -139,10 +140,29 @@ pub unsafe extern "C" fn wasmtime_imported_memory32_size(
 }
 
 static mut C: u32 = 0;
-/// counter function
-pub extern "C" fn wasmtime_print_text() {
+/// instruction hook
+pub extern "C" fn wasmtime_instruction_hook(namespace: u32, index: u32) {
     unsafe {
         C += 1;
-        print!("counter: {}\n", C);
+        print!("in function u{}:{}\n", namespace, index);
+        print!("  global counter is now {}\n", C);
     }
+}
+
+/// function hook
+pub extern "C" fn wasmtime_func_hook_enter(namespace: u32, index: u32) {
+    match SystemTime::now().duration_since(SystemTime::UNIX_EPOCH) {
+        Ok(n) => println!("1970-01-01 00:00:00 UTC was {} milliseconds ago!", n.as_millis()),
+        Err(_) => panic!("SystemTime before UNIX EPOCH!"),
+    }
+    print!("enter function u{}:{}\n", namespace, index);
+}
+
+/// function hook
+pub extern "C" fn wasmtime_func_hook_exit(namespace: u32, index: u32) {
+    match SystemTime::now().duration_since(SystemTime::UNIX_EPOCH) {
+        Ok(n) => println!("1970-01-01 00:00:00 UTC was {} milliseconds ago!", n.as_millis()),
+        Err(_) => panic!("SystemTime before UNIX EPOCH!"),
+    }
+    print!("exit function u{}:{}\n", namespace, index);
 }
