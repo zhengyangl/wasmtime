@@ -4,7 +4,7 @@
 
 use crate::vmcontext::VMContext;
 use cranelift_wasm::{DefinedMemoryIndex, MemoryIndex};
-use std::time::{SystemTime};
+use std::time::SystemTime;
 
 /// Implementation of f32.ceil
 pub extern "C" fn wasmtime_f32_ceil(x: f32) -> f32 {
